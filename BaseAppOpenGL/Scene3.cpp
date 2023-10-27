@@ -29,17 +29,14 @@ CScene3::CScene3()
 
 	// Carrega todas as texturas
 	pTextures = new CTexture();
-	pTextures->CreateTextureAnisotropic(0, "../Scene3/CasaTex.jpg");
-	pTextures->CreateTextureAnisotropic(1, "../Scene1/grass.bmp");
-	pTextures->CreateTextureAnisotropic(2, "../Scene3/gold.jpg");
-	pTextures->CreateTextureAnisotropic(3, "../Scene3/ruby.jpg");
+
 
 
 	fRotY = 0.0f;
 
 	fPosX = 0.0f;
-	fPosY = 20.0f;
-	fPosZ = 30.0f;
+	fPosY = 0.0f;
+	fPosZ = 0.0f;
 
 
 	for (int i = 0; i < 38; i++)
@@ -47,30 +44,16 @@ CScene3::CScene3()
 
 	
 
-	// Definição das configurações da fonte de luz (EMISSOR)
 	LightAmbient[0] = 1.0f; LightAmbient[1] = 1.0f; LightAmbient[2] = 1.0f; LightAmbient[3] = 1.0f;
 	LightDiffuse[0] = 1.0f; LightDiffuse[1] = 1.0f; LightDiffuse[2] = 1.0f; LightDiffuse[3] = 1.0f;
 	LightSpecular[0] = 1.0f; LightSpecular[1] = 1.0f; LightSpecular[2] = 1.0f; LightSpecular[3] = 1.0f;
 	LightPosition[0] = fPosX; LightPosition[1] = fPosY; LightPosition[2] = fPosZ; LightPosition[3] = 1.0f;
 
 	// Definição das configurações do material do objeto (REFLEXÂO)
-	MatAmbient[0] = 0.1f; MatAmbient[1] = 0.0f; MatAmbient[2] = 0.0f; MatAmbient[3] = 1.0f;
-	MatDiffuse[0] = 1.0f; MatDiffuse[1] = 0.0f; MatDiffuse[2] = 0.0f; MatDiffuse[3] = 1.0f;
+	MatAmbient[0] = 0.2f; MatAmbient[1] = 0.2f; MatAmbient[2] = 0.2f; MatAmbient[3] = 1.0f;
+	MatDiffuse[0] = 1.0f; MatDiffuse[1] = 1.0f; MatDiffuse[2] = 1.0f; MatDiffuse[3] = 1.0f;
 	MatSpecular[0] = 1.0f; MatSpecular[1] = 1.0f; MatSpecular[2] = 1.0f; MatSpecular[3] = 1.0f;
-	MatShininess = 128.0f;
-
-
-	Ruby = CMaterial(
-		0.1745f, 0.01175f, 0.01175f, 0.55f,
-		0.61424f, 0.04136f, 0.04136f, 0.55f,
-		0.727811f, 0.626959f, 0.626959f, 0.55f,
-		76.8f);
-
-	Gold = CMaterial(
-		0.19125f, 0.0735f, 0.0275f, 1.0f,
-		0.75164f, 0.60648f, 0.22648f, 1.0f,
-		0.628281f, 0.555802f, 0.366065f, 1.0f,
-		51.2f);
+	MatShininess = 255.0f;
 
 }
 
@@ -125,8 +108,7 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	// Seta as posições da câmera
 	pCamera->setView();
 
-	// Desenha grid 
-	//Draw3DSGrid(20.0f, 20.0f);
+	
 
 	// Desenha os eixos do sistema cartesiano
 	DrawAxis();
@@ -146,65 +128,46 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 
 	pTextures->ApplyTexture(1);
 
-	// Chão
-	/*glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 0.0f);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-50.0f, 0.0f, 50.0f);
-	glTexCoord2f(5.0f, 0.0f);  glVertex3f(50.0f, 0.0f, 50.0f);
-	glTexCoord2f(5.0f, 5.0f);  glVertex3f(50.0f, 0.0f, -50.0f);
-	glTexCoord2f(0.0f, 5.0f);  glVertex3f(-50.0f, 0.0f, -50.0f);
-	glEnd();
-	glPopMatrix();*/
-		
+	// Desenha lâmpada  ////
+	LightPosition[0] = 0.0f;
+	LightPosition[1] = 20.0f;
+	LightPosition[2] = 0.0f;;
+	LightPosition[3] = 1.0f;
 
-	//// Casa (IMMEDIATE MODE)
-	int iTexCount = 0;
-	int iVertCount = 0;
-	pTextures->ApplyTexture(0);
+
 	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 0.0f);
-	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < 204; i++)
-	{
-		float u = vfCasaTexCoords[iTexCount++];
-		float v = vfCasaTexCoords[iTexCount++];
-		float x = vfCasaVerts[iVertCount++];
-		float y = vfCasaVerts[iVertCount++];
-		float z = vfCasaVerts[iVertCount++];
-
-		glTexCoord2f(u, v);
-		glVertex3f(x, y, z);
-	}
-	glEnd();
+	glTranslatef(-5.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	DrawLineCube();
 	glPopMatrix();
 
 
-	//// Casa  (VERTEX ARRAYS)
-	//pTextures->ApplyTexture(0);
-	//glPushMatrix();
-	//glTranslatef(0.0f, 0.0f, 0.0f);
-	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glTexCoordPointer(2, GL_FLOAT, 0, &this->vfCasaTexCoords[0]);
-	//glVertexPointer(3, GL_FLOAT, 0, &this->vfCasaVerts[0]);
-	//glDrawArrays(GL_TRIANGLES, 0, 204);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glPopMatrix();
-	
-		
-	
-	
+	glPushMatrix();
+	glTranslatef(0.0f, 0.0f, -5.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	DrawLineCube();
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glTranslatef(5.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	DrawLineCube();
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glTranslatef(0.0f, 20.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glutSolidSphere(0.2, 10, 10);
+	glPopMatrix();
 
 
 
-	// Desenha lâmpada  ////
-	LightPosition[0] = fPosX; 
-	LightPosition[1] = fPosY; 
-	LightPosition[2] = fPosZ; 
-	LightPosition[3] = 1.0f;
 
+
+
+	///POSIÇÃO DA ESFERA
 	glPushMatrix();
 	glTranslatef(fPosX, fPosY, fPosZ);
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -213,6 +176,8 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	/////////////////////////
 
 	
+
+
 	glEnable(GL_LIGHTING); //  Habilita iluminação
 
 	
@@ -221,29 +186,54 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
-	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);	
-	glEnable(GL_LIGHT0); // Habilita a luz 0
-
-	// Atribui os parâmetros de reflexão  do objeto
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MatAmbient);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MatDiffuse);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, MatSpecular);
-	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, MatShininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
 
 
+	if ((fPosX > -5.5f && fPosX < -4.5f) && (fPosZ > -0.5f && fPosZ < 0.5f)) {
+		
 
-	pTextures->ApplyTexture(2);
+		LightAmbient[0] = 1.0f; LightAmbient[1] = 0.0f; LightAmbient[2] = 1.0f; LightAmbient[3] = 1.0f;
+		LightDiffuse[0] = 1.0f; LightDiffuse[1] = 0.0f; LightDiffuse[2] = 1.0f; LightDiffuse[3] = 1.0f;
+		LightSpecular[0] = 1.0f; LightSpecular[1] = 0.0f; LightSpecular[2] = 1.0f; LightSpecular[3] = 1.0f;
+
+		glEnable(GL_LIGHT0); // Habilita a luz
+	}
+
+	if ((fPosX > -0.5f && fPosX < 0.5f) && (fPosZ > -5.5f && fPosZ < -4.5f)) {
+
+
+		LightAmbient[0] = 1.0f; LightAmbient[1] = 1.0f; LightAmbient[2] = 0.0f; LightAmbient[3] = 1.0f;
+		LightDiffuse[0] = 1.0f; LightDiffuse[1] = 1.0f; LightDiffuse[2] = 0.0f; LightDiffuse[3] = 1.0f;
+		LightSpecular[0] = 1.0f; LightSpecular[1] = 1.0f; LightSpecular[2] = 0.0f; LightSpecular[3] = 1.0f;
+
+		glEnable(GL_LIGHT0); // Habilita a luz
+	}
+
+	if ((fPosX > 4.5f && fPosX < 5.5f) && (fPosZ > -0.5f && fPosZ < 0.5f)) {
+
+
+		LightAmbient[0] = 0.0f; LightAmbient[1] = 1.0f; LightAmbient[2] = 1.0f; LightAmbient[3] = 1.0f;
+		LightDiffuse[0] = 0.0f; LightDiffuse[1] = 1.0f; LightDiffuse[2] = 1.0f; LightDiffuse[3] = 1.0f;
+		LightSpecular[0] = 0.0f; LightSpecular[1] = 1.0f; LightSpecular[2] = 1.0f; LightSpecular[3] = 1.0f;
+
+		glEnable(GL_LIGHT0); // Habilita a luz
+	}
+
+
+	// Desenha grid 
+	Draw3DSGrid(50.0f, 50.0f);
+
+	DrawLineCube();
+
+
 
 	glEnable(GL_TEXTURE_GEN_S);
 	glEnable(GL_TEXTURE_GEN_T);
 	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 
-	// Desenha os objetos com a definição do material específico
-	glPushMatrix();
-	glTranslatef(0.0f, 10.0f, 20.0f);
-	glutSolidTeapot(5.0);
-	glPopMatrix();
+
 
 	glDisable(GL_TEXTURE_GEN_S);
 	glDisable(GL_TEXTURE_GEN_T);
@@ -460,8 +450,8 @@ void CScene3::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 //	Cria um grid horizontal ao longo dos eixos X e Z
 void CScene3::Draw3DSGrid(float width, float length)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glColor3f(0.0f, 0.3f, 0.0f);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glColor3f(0.3f, 0.3f, 0.3f);
 	glPushMatrix();
 	for (float i = -width; i <= length; i += 1)
 	{
@@ -579,4 +569,50 @@ void CScene3::DrawPyramid()
 	glVertex3f(-0.5f, -0.5f, 0.5f);
 	glVertex3f(0.0f, 0.5f, 0.0f);
 	glEnd();
+}
+
+void CScene3::DrawLineCube() 
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+
+	glColor3f(1.0f, 1.0f, 1.0f);
+	//glColor3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
+	glVertex3f(0.5f, -0.5f, 0.5f);
+	glVertex3f(0.5f, 0.5f, 0.5f);
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+
+	// face trás
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+
+	// face direita
+	glVertex3f(0.5f, -0.5f, 0.5f);
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+	glVertex3f(0.5f, 0.5f, 0.5f);
+
+
+	// face esquerda
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+
+	// face baixo
+	glVertex3f(-0.5f, -0.5f, -0.5f);
+	glVertex3f(0.5f, -0.5f, -0.5f);
+	glVertex3f(0.5f, -0.5f, 0.5f);
+	glVertex3f(-0.5f, -0.5f, 0.5f);
+
+	// face cima
+	glVertex3f(-0.5f, 0.5f, 0.5f);
+	glVertex3f(0.5f, 0.5f, 0.5f);
+	glVertex3f(0.5f, 0.5f, -0.5f);
+	glVertex3f(-0.5f, 0.5f, -0.5f);
+	glEnd();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
