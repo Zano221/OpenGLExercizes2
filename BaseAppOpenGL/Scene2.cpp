@@ -1,5 +1,6 @@
 #include "Scene2.h"
 
+
 CScene2::CScene2()
 {
 	pCamera = NULL;
@@ -161,32 +162,6 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	glColor4ub(255, 255, 255, 255);
 	glEnable(GL_TEXTURE_2D);
 
-	// pTextures->ApplyTexture(1);
-
-	// Chão
-	/*glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 0.0f);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f);  glVertex3f(-50.0f, 0.0f, 50.0f);
-	glTexCoord2f(5.0f, 0.0f);  glVertex3f(50.0f, 0.0f, 50.0f);
-	glTexCoord2f(5.0f, 5.0f);  glVertex3f(50.0f, 0.0f, -50.0f);
-	glTexCoord2f(0.0f, 5.0f);  glVertex3f(-50.0f, 0.0f, -50.0f);
-	glEnd();
-	glPopMatrix();*/
-
-	//// Casa  (VERTEX ARRAYS)
-	//pTextures->ApplyTexture(0);
-	//glPushMatrix();
-	//glTranslatef(0.0f, 0.0f, 0.0f);
-	//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glTexCoordPointer(2, GL_FLOAT, 0, &this->vfCasaTexCoords[0]);
-	//glVertexPointer(3, GL_FLOAT, 0, &this->vfCasaVerts[0]);
-	//glDrawArrays(GL_TRIANGLES, 0, 204);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	//glPopMatrix();
-
 
 
 	// Desenha grid 
@@ -198,7 +173,7 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 	for (int i = 0; i < 3; i++) {
 
-		BallAngle[i] = atan2(fPosZ[i], fPosX[i]);
+		//BallAngle[i] = atan2(fPosZ[i], fPosX[i]);
 
 		fPosX[i] = 5.5f * cos(BallAngle[i]);
 		fPosZ[i] = 5.5f * sin(BallAngle[i]);
@@ -214,9 +189,9 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 		BallAngle[i] += 0.02f;
 
-		/*if (BallAngle[i] > 2 * M_PI) {
+		if (BallAngle[i] > 2 * M_PI) {
 			BallAngle[i] -= 2 * M_PI;
-		}*/
+		}
 		
 
 

@@ -8,7 +8,10 @@
 #include "CMaterial.h"
 #include <glm/glm.hpp>
 #include <vector>
-#include <cmath>
+#include "math.h"
+
+# define M_PI           3.14159265358979323846 //cmath n funciona, nem math.h, ent fds
+#define M_PI_2     1.57079632679489661923
 
 class CScene2 : public CSceneBaseClass
 {
