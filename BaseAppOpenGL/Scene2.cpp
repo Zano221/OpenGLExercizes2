@@ -40,17 +40,19 @@ CScene2::CScene2()
 		faceColor[i] = { (rand() % 255), (rand() % 255), (rand() % 255) };
 
 
-	fPosX[0] = -50.0f;
-	fPosY[0] = 10.0f;
-	fPosZ[0] = -50.0f;
+	fPosX[0] = -5.5f;
+	fPosY[0] = 0.0f;
+	fPosZ[0] = -5.5f;
+
 
 	fPosX[1] = 0.0f;
-	fPosY[1] = 10.0f;
-	fPosZ[1] = 50.0f;
+	fPosY[1] = 0.0f;
+	fPosZ[1] = 5.5f;
 
-	fPosX[2] = 50.0f;
-	fPosY[2] = 10.0f;
-	fPosZ[2] = -50.0f;
+	fPosX[2] = 5.0f;
+	fPosY[2] = 0.0f;
+	fPosZ[2] = -5.5f;
+
 
 	// Definição das configurações da fonte de luz (EMISSOR)
 
@@ -58,23 +60,30 @@ CScene2::CScene2()
 		LightAmbient[i][0] = 0.0f; LightAmbient[i][1] = 0.0f;; LightAmbient[i][2] = 0.0f;; LightAmbient[i][3] = 0.0f;;
 		LightSpecular[i][0] = 1.0f; LightSpecular[i][1] = 1.0f; LightSpecular[i][2] = 1.0f; LightSpecular[i][3] = 1.0f;
 		LightPosition[i][0] = fPosX[i]; LightPosition[i][1] = fPosY[i]; LightPosition[i][2] = fPosZ[i]; LightPosition[i][3] = 1.0f;
+
+
+		BallAngle[i] = atan2(fPosZ[i] - 0.0f, fPosX[i] - 0.0f);
+
+		fPosX[i] = 5.5f * cos(BallAngle[i]);
+		fPosZ[i] = 5.5f * sin(BallAngle[i]);
+
+		LightAngle[i][0] = 0.0f;
+		LightAngle[i][1] = BallAngle[0];
+		LightAngle[i][1] = BallAngle[1];
+		LightAngle[i][1] = BallAngle[2];
+		LightAngle[i][2] = 0.0f;
 	}
 
 	LightDiffuse[0][0] = 1.0f; LightDiffuse[0][1] = 0.1f; LightDiffuse[0][2] = 0.0f; LightDiffuse[0][3] = 1.0f;
 	LightDiffuse[1][0] = 0.0f; LightDiffuse[1][1] = 1.0f; LightDiffuse[1][2] = 0.0f; LightDiffuse[1][3] = 1.0f;
 	LightDiffuse[2][0] = 0.0f; LightDiffuse[2][1] = 0.0f; LightDiffuse[2][2] = 1.0f; LightDiffuse[2][3] = 1.0f;
 
-	LightDirection[0] = 0.0f, LightDirection[1] = 1.0f; LightDirection[2] = 0.0f;
 
 	// Definição das configurações do material do objeto (REFLEXÂO)
 	MatAmbient[0] = 0.0f; MatAmbient[1] = 0.0f; MatAmbient[2] = 0.0f; MatAmbient[3] = 0.0f;
 	MatDiffuse[0] = 1.0f; MatDiffuse[1] = 1.0f; MatDiffuse[2] = 1.0f; MatDiffuse[3] = 1.0f;
 	MatSpecular[0] = 1.0f; MatSpecular[1] = 1.0f; MatSpecular[2] = 1.0f; MatSpecular[3] = 1.0f;
 	MatShininess = 255.0f;
-
-	RLightPosSwitch = false;
-	GLightPosSwitch = false;
-	BLightPosSwitch = false;
 
 	fLightDistance = 50.0f;
 
@@ -180,122 +189,86 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 
 
-
+	// Desenha grid 
+	Draw3DSGrid(10.0f, 10.0f);
 
 
 
 	// Desenha lâmpada  ////
 
 	for (int i = 0; i < 3; i++) {
+
+		BallAngle[i] = atan2(fPosZ[i], fPosX[i]);
+
+		fPosX[i] = 5.5f * cos(BallAngle[i]);
+		fPosZ[i] = 5.5f * sin(BallAngle[i]);
+
+
 		LightPosition[i][0] = fPosX[i];
 		LightPosition[i][1] = fPosY[i];
 		LightPosition[i][2] = fPosZ[i];
 		LightPosition[i][3] = 1.0f;
-	}
+		LightAngle[i][1] = BallAngle[i];
 
 
-	// Luz R
-	if (!RLightPosSwitch) {
-		fPosX[0] += 0.5f;
-		fPosZ[0] += 0.5f;
 
-		if (fPosX[0] > fLightDistance && fPosZ[0] > fLightDistance) {
-			RLightPosSwitch = true;
-		}
+		BallAngle[i] += 0.02f;
 
-	}
-	else {
-		fPosX[0] -= 0.5f;
-		fPosZ[0] -= 0.5f;
+		/*if (BallAngle[i] > 2 * M_PI) {
+			BallAngle[i] -= 2 * M_PI;
+		}*/
+		
 
-		if (fPosX[0] < -fLightDistance && fPosZ[0] < -fLightDistance) {
-			RLightPosSwitch = false;
-		}
-	}
 
-	// Luz G
-	if (!GLightPosSwitch) {
-		fPosZ[1] -= 0.5f;
+		//fPosZ[i] += 0.2f;
+		//if (BallAngle[i] >= 360.0f) BallAngle[i] = 0.0f;
 
-		if (fPosZ[1] < -fLightDistance) {
-			GLightPosSwitch = true;
-		}
 
 	}
-	else {
-		fPosZ[1] += 0.5f;
-
-		if (fPosZ[1] > fLightDistance) {
-			GLightPosSwitch = false;
-		}
-	}
-
-	// Luz B
-	if (!BLightPosSwitch) {
-		fPosX[2] -= 0.5f;
-		fPosZ[2] += 0.5f;
-
-		if (fPosX[2] < -fLightDistance && fPosZ[2] > fLightDistance) {
-			BLightPosSwitch = true;
-		}
-
-	}
-	else {
-		fPosX[2] += 0.5f;
-		fPosZ[2] -= 0.5f;
-
-		if (fPosX[2] > fLightDistance && fPosZ[2] < -fLightDistance) {
-			BLightPosSwitch = false;
-		}
-	}
-
-	glPushMatrix();
-	glTranslatef(fPosX[0], fPosY[0], fPosZ[0]);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glutSolidSphere(0.2, 10, 10);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(fPosX[1], fPosY[1], fPosZ[1]);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glutSolidSphere(0.2, 10, 10);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(fPosX[2], fPosY[2], fPosZ[2]);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glutSolidSphere(0.2, 10, 10);
-	glPopMatrix();
-	/////////////////////////
-
 
 	glEnable(GL_LIGHTING); //  Habilita iluminação
 
-
-
+	
+	glPushMatrix();
+	//glRotatef(BallAngle[0], 0.0f, 1.0f, 0.0f);
+	glTranslatef(fPosX[0], fPosY[0], fPosZ[0]);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glutSolidSphere(0.2, 10, 10);
 	// Atribui os parâmetros da luz 0
 	glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient[0]);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse[0]);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular[0]);
 	glLightfv(GL_LIGHT0, GL_POSITION, LightPosition[0]);
-	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT0); // Habilita a luz 0
+	glPopMatrix();
 
+	glPushMatrix();
+	//glRotatef(BallAngle[1], 1.0f, 0.0f, 0.0f);
+	glTranslatef(fPosX[1], fPosY[1], fPosZ[1]);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glutSolidSphere(0.2, 10, 10);
 	// Atribui os parâmetros da luz 1
 	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient[1]);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse[1]);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, LightSpecular[1]);
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition[1]);
-	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT1); // Habilita a luz 1
+	glPopMatrix();
 
+	glPushMatrix();
+	//glRotatef(BallAngle[2], 0.0f, 0.0f, 1.0f);
+	glTranslatef(fPosX[2], fPosY[2], fPosZ[2]);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glutSolidSphere(0.2, 10, 10);
 	// Atribui os parâmetros da luz 2
 	glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient[2]);
 	glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse[2]);
 	glLightfv(GL_LIGHT2, GL_SPECULAR, LightSpecular[2]);
 	glLightfv(GL_LIGHT2, GL_POSITION, LightPosition[2]);
-	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, LightDirection);
 	glEnable(GL_LIGHT2); // Habilita a luz 2
+	glPopMatrix();
+	/////////////////////////
+
 
 	// Atribui os parâmetros de reflexão  do objeto
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MatAmbient);
@@ -304,9 +277,6 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, MatShininess);
 
 	//pTextures->ApplyTexture(0);
-
-	// Desenha grid 
-	Draw3DSGrid(200.0f, 200.0f);
 
 
 	pTextures->ApplyTexture(2);
@@ -318,8 +288,8 @@ int CScene2::DrawGLScene(void)	// Função que desenha a cena
 
 	// Desenha os objetos com a definição do material específico
 	glPushMatrix();
-	glTranslatef(0.0f, 10.0f, 20.0f);
-	//glutSolidTeapot(5.0);         >>>>>>>>>>>>>>>TEAPOT<<<<<<<<<<<<<<
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glutSolidTeapot(1.0);			// >>>>>>>>>>>>>> > TEAPOT<<<<<<<<<<<<<<
 	glPopMatrix();
 
 	glDisable(GL_TEXTURE_GEN_S);
@@ -496,7 +466,7 @@ void CScene2::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 //	Cria um grid horizontal ao longo dos eixos X e Z
 void CScene2::Draw3DSGrid(float width, float length)
 {
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glColor3f(0.2f, 0.2f, 0.2f);
 	glPushMatrix();
 	for (float i = -width; i <= length; i += 1)
@@ -514,7 +484,7 @@ void CScene2::Draw3DSGrid(float width, float length)
 		}
 	}
 	glPopMatrix();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 

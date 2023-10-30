@@ -8,6 +8,7 @@
 #include "CMaterial.h"
 #include <glm/glm.hpp>
 #include <vector>
+#include <cmath>
 
 class CScene2 : public CSceneBaseClass
 {
@@ -80,7 +81,8 @@ private:
 	GLfloat LightDiffuse[3][4];
 	GLfloat LightSpecular[3][4];
 	GLfloat LightPosition[3][4];
-	GLfloat LightDirection[3];
+	GLfloat BallAngle[3];
+	GLfloat LightAngle[3][3];
 
 	// Definição das configurações do material do objeto (REFLEXÂO)
 	GLfloat MatAmbient[4];
